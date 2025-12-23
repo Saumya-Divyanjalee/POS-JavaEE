@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Management</title>
+    <script src="../js/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .nav-buttons button:hover {
+            background-color: #45a049;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-container input {
+            padding: 10px;
+            margin: 5px;
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-container button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-save {
+            background-color: #2196F3;
+            color: white;
+        }
+        .btn-update {
+            background-color: #FF9800;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-reset {
+            background-color: #607D8B;
+            color: white;
+        }
+        .btn-save:hover {
+            background-color: #0b7dda;
+        }
+        .btn-update:hover {
+            background-color: #e68900;
+        }
+        .btn-delete:hover {
+            background-color: #da190b;
+        }
+        .btn-reset:hover {
+            background-color: #4a5f6d;
+        }
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+            cursor: pointer;
+        }
+        tr.selected {
+            background-color: #e3f2fd !important;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+<h1>Customer Management</h1>
+
+<div class="nav-buttons">
+    <button onclick="window.location.href='Customer.html'">Customers Management</button>
+    <button onclick="window.location.href='Item.html'">Item Management</button>
+    <button onclick="window.location.href='Order.html'">Order Management</button>
+    <button onclick="window.location.href='../Index.html'">Home</button>
+</div>
+
+<div class="form-container">
+    <input type="text" id="customer-id" placeholder="Customer ID">
+    <input type="text" id="customer-name" placeholder="Customer Name">
+    <input type="text" id="customer-address" placeholder="Customer Address">
+    <input type="text" id="customer-phone" placeholder="Customer Phone">
+    <input type="text" id="customer-email" placeholder="Customer Email">
+    <br><br>
+    <button class="btn-save" onclick="saveCustomer()">Save</button>
+    <button class="btn-update" onclick="updateCustomer()">Update</button>
+    <button class="btn-delete" onclick="deleteCustomer()">Delete</button>
+    <button class="btn-reset" onclick="resetForm()">Reset</button>
+</div>
+
+<div class="table-container">
+    <table id="customer-table">
+        <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>Customer Name</th>
+            <th>Address</th>
+            <th>Mobile Number</th>
+            <th>E-mail</th>
+        </tr>
+        </thead>
+        <tbody id="customer-table-body">
+        <tr class="no-data">
+            <td colspan="5">Loading customers...</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        console.log('Page loaded, fetching customers...');
+        getAllCustomer();
+
+        // Row click event for selection
+        $(document).on('click', '#customer-table-body tr:not(.no-data)', function() {
+            // Remove previous selection
+            $('#customer-table-body tr').removeClass('selected');
+            // Add selection to clicked row
+            $(this).addClass('selected');
+
+            // Fill form with selected row data
+            const cid = $(this).find('td:eq(0)').text();
+            const cname = $(this).find('td:eq(1)').text();
+            const caddress = $(this).find('td:eq(2)').text();
+            const cphone = $(this).find('td:eq(3)').text();
+            const cemail = $(this).find('td:eq(4)').text();
+
+            $('#customer-id').val(cid);
+            $('#customer-name').val(cname);
+            $('#customer-address').val(caddress);
+            $('#customer-phone').val(cphone);
+            $('#customer-email').val(cemail);
+        });
+    });
+
+    function saveCustomer() {
+        // Validation
+        if (!$('#customer-id').val()) {
+            alert('Please enter Customer ID');
+            return;
+        }
+        if (!$('#customer-name').val()) {
+            alert('Please enter Customer Name');
+            return;
+        }
+
+        const data = {
+            cid: $('#customer-id').val(),
+            cname: $('#customer-name').val(),
+            caddress: $('#customer-address').val(),
+            cphone: $('#customer-phone').val(),
+            cemail: $('#customer-email').val()
+        };
+
+        console.log('Saving customer:', data);
+
+        $.ajax({
+            url: "http://localhost:8080/POS_Backend_Web_exploded/customer",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log('Save response:', response);
+                alert(response);
+                resetForm();
+                getAllCustomer();
+            },
+            error: function(xhr, status, error) {
+                console.error('Save error:', xhr.responseText);
+                alert('Error saving customer: ' + (xhr.responseText || error));
+            }
+        });
+    }
+
+    function updateCustomer() {
+        // Validation
+        if (!$('#customer-id').val()) {
+            alert('Please select a customer to update');
+            return;
+        }
+
+        const data = {
+            cid: $('#customer-id').val(),
+            cname: $('#customer-name').val(),
+            caddress: $('#customer-address').val(),
+            cphone: $('#customer-phone').val(),
+            cemail: $('#customer-email').val()
+        };
+
+        console.log('Updating customer:', data);
+
+        $.ajax({
+            url: "http://localhost:8080/POS_Backend_Web_exploded/customer",
+            method: "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function(response) {
+                console.log('Update response:', response);
+                alert(response);
+                resetForm();
+                getAllCustomer();
+            },
+            error: function(xhr, status, error) {
+                console.error('Update error:', xhr.responseText);
+                alert('Error updating customer: ' + (xhr.responseText || error));
+            }
+        });
+    }
+
+    function deleteCustomer() {
+        const cid = $('#customer-id').val();
+
+        if (!cid) {
+            alert('Please select a customer to delete');
+            return;
+        }
+
+        if (!confirm('Are you sure you want to delete this customer?')) {
+            return;
+        }
+
+        console.log('Deleting customer:', cid);
+
+        $.ajax({
+            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer?cid=' + cid,
+            method: "DELETE",
+            success: function(response) {
+                console.log('Delete response:', response);
+                alert(response);
+                resetForm();
+                getAllCustomer();
+            },
+            error: function(xhr, status, error) {
+                console.error('Delete error:', xhr.responseText);
+                alert('Error deleting customer: ' + (xhr.responseText || error));
+            }
+        });
+    }
+
+    function getAllCustomer() {
+        console.log('Fetching all customers...');
+
+        $.ajax({
+            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer',
+            method: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log('Customers received:', response);
+                console.log('Response type:', typeof response);
+                console.log('Is array:', Array.isArray(response));
+
+                $('#customer-table-body').empty();
+
+                if (!response || response.length === 0) {
+                    $('#customer-table-body').html(
+                        '<tr class="no-data"><td colspan="5">No customers found</td></tr>'
+                    );
+                    return;
+                }
+
+                for (let customer of response) {
+                    console.log('Processing customer:', customer);
+                    const row =
+                        "<tr>" +
+                        "<td>" + (customer.cid || '') + "</td>" +
+                        "<td>" + (customer.cname || '') + "</td>" +
+                        "<td>" + (customer.caddress || '') + "</td>" +
+                        "<td>" + (customer.cphone || '') + "</td>" +
+                        "<td>" + (customer.cemail || '') + "</td>" +
+                        "</tr>";
+                    $("#customer-table-body").append(row);
+                }
+
+                console.log('Table populated with', response.length, 'customers');
+            },
+            error: function(xhr, status, error) {
+                console.error('Load error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                $('#customer-table-body').html(
+                    '<tr class="no-data"><td colspan="5">Error loading customers: ' + error + '</td></tr>'
+                );
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#customer-id').val('');
+        $('#customer-name').val('');
+        $('#customer-address').val('');
+        $('#customer-phone').val('');
+        $('#customer-email').val('');
+        $('#customer-table-body tr').removeClass('selected');
+    }
+</script>
+
+</body>
+</html>

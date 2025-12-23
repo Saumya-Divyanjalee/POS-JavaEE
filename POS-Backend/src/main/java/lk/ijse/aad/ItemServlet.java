@@ -17,8 +17,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@WebServlet(urlPatterns = "/customer")
-public class CustomerServlet extends HttpServlet {
+@WebServlet(urlPatterns = "/item")
+public class ItemServlet extends HttpServlet {
     BasicDataSource ds;
 
     @Override
@@ -39,26 +39,24 @@ public class CustomerServlet extends HttpServlet {
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
 
-            String id = jsonObject.get("cid").getAsString();
-            String name = jsonObject.get("cname").getAsString();
-            String address = jsonObject.get("caddress").getAsString();
-            String phone = jsonObject.get("cphone").getAsString();
-            String email = jsonObject.get("cemail").getAsString();
+            String code = jsonObject.get("code").getAsString();
+            String description = jsonObject.get("description").getAsString();
+            double unitPrice = jsonObject.get("unitPrice").getAsDouble();
+            int qtyOnHand = jsonObject.get("qtyOnHand").getAsInt();
 
             try (Connection connection = ds.getConnection()) {
-                String query = "INSERT INTO customer (id, name, address, phone, email) VALUES (?, ?, ?, ?, ?)";
+                String query = "INSERT INTO item (code, description, unit_price, qty_on_hand) VALUES (?, ?, ?, ?)";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setString(1, id);
-                preparedStatement.setString(2, name);
-                preparedStatement.setString(3, address);
-                preparedStatement.setString(4, phone);
-                preparedStatement.setString(5, email);
+                preparedStatement.setString(1, code);
+                preparedStatement.setString(2, description);
+                preparedStatement.setDouble(3, unitPrice);
+                preparedStatement.setInt(4, qtyOnHand);
 
                 int rowInserted = preparedStatement.executeUpdate();
                 if (rowInserted > 0) {
-                    resp.getWriter().write("Customer Saved Successfully");
+                    resp.getWriter().write("Item Saved Successfully");
                 } else {
-                    resp.getWriter().write("Customer Save Failed");
+                    resp.getWriter().write("Item Save Failed");
                 }
             }
         } catch (SQLException e) {
@@ -77,26 +75,24 @@ public class CustomerServlet extends HttpServlet {
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(req.getReader(), JsonObject.class);
 
-            String id = jsonObject.get("cid").getAsString();
-            String name = jsonObject.get("cname").getAsString();
-            String address = jsonObject.get("caddress").getAsString();
-            String phone = jsonObject.get("cphone").getAsString();
-            String email = jsonObject.get("cemail").getAsString();
+            String code = jsonObject.get("code").getAsString();
+            String description = jsonObject.get("description").getAsString();
+            double unitPrice = jsonObject.get("unitPrice").getAsDouble();
+            int qtyOnHand = jsonObject.get("qtyOnHand").getAsInt();
 
             try (Connection connection = ds.getConnection()) {
-                String query = "UPDATE customer SET name=?, address=?, phone=?, email=? WHERE id=?";
+                String query = "UPDATE item SET description=?, unit_price=?, qty_on_hand=? WHERE code=?";
                 PreparedStatement preparedStatement = connection.prepareStatement(query);
-                preparedStatement.setString(1, name);
-                preparedStatement.setString(2, address);
-                preparedStatement.setString(3, phone);
-                preparedStatement.setString(4, email);
-                preparedStatement.setString(5, id);
+                preparedStatement.setString(1, description);
+                preparedStatement.setDouble(2, unitPrice);
+                preparedStatement.setInt(3, qtyOnHand);
+                preparedStatement.setString(4, code);
 
                 int rowUpdated = preparedStatement.executeUpdate();
                 if (rowUpdated > 0) {
-                    resp.getWriter().write("Customer Updated Successfully");
+                    resp.getWriter().write("Item Updated Successfully");
                 } else {
-                    resp.getWriter().write("Customer Update Failed");
+                    resp.getWriter().write("Item Update Failed");
                 }
             }
         } catch (SQLException e) {
@@ -112,30 +108,27 @@ public class CustomerServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
 
         try (Connection connection = ds.getConnection()) {
-            String query = "SELECT * FROM customer ORDER BY id";
+            String query = "SELECT * FROM item ORDER BY code";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
-            JsonArray customerList = new JsonArray();
+            JsonArray itemList = new JsonArray();
 
             while (resultSet.next()) {
-                String cId = resultSet.getString("id");
-                String cName = resultSet.getString("name");
-                String cAddress = resultSet.getString("address");
-                String cPhone = resultSet.getString("phone");
-                String cEmail = resultSet.getString("email");
+                String code = resultSet.getString("code");
+                String description = resultSet.getString("description");
+                double unitPrice = resultSet.getDouble("unit_price");
+                int qtyOnHand = resultSet.getInt("qty_on_hand");
 
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("cid", cId);
-                jsonObject.addProperty("cname", cName);
-                jsonObject.addProperty("caddress", cAddress);
-                jsonObject.addProperty("cphone", cPhone);
-                jsonObject.addProperty("cemail", cEmail);
-                customerList.add(jsonObject);
+                jsonObject.addProperty("code", code);
+                jsonObject.addProperty("description", description);
+                jsonObject.addProperty("unitPrice", unitPrice);
+                jsonObject.addProperty("qtyOnHand", qtyOnHand);
+                itemList.add(jsonObject);
             }
 
-            // Use Gson to properly format JSON
             Gson gson = new Gson();
-            resp.getWriter().write(gson.toJson(customerList));
+            resp.getWriter().write(gson.toJson(itemList));
 
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -151,18 +144,18 @@ public class CustomerServlet extends HttpServlet {
         resp.setContentType("text/plain");
         resp.setCharacterEncoding("UTF-8");
 
-        String id = req.getParameter("cid");
+        String code = req.getParameter("code");
 
         try (Connection connection = ds.getConnection()) {
-            String query = "DELETE FROM customer WHERE id=?";
+            String query = "DELETE FROM item WHERE code=?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, id);
+            preparedStatement.setString(1, code);
 
             int rowDeleted = preparedStatement.executeUpdate();
             if (rowDeleted > 0) {
-                resp.getWriter().write("Customer Deleted Successfully");
+                resp.getWriter().write("Item Deleted Successfully");
             } else {
-                resp.getWriter().write("Customer Delete Failed");
+                resp.getWriter().write("Item Delete Failed");
             }
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
