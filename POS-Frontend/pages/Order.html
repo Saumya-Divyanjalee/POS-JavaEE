@@ -3,14 +3,522 @@
 <head>
     <meta charset="UTF-8">
     <title>Order Management</title>
+    <script src="../js/jquery-3.7.1.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .nav-buttons {
+            margin-bottom: 20px;
+        }
+        .nav-buttons button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .nav-buttons button:hover {
+            background-color: #45a049;
+        }
+        .order-form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .form-section h3 {
+            color: #4CAF50;
+            margin-top: 0;
+        }
+        .form-row {
+            margin-bottom: 15px;
+        }
+        .form-row label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-row input, .form-row select {
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .form-row input[readonly] {
+            background-color: #f0f0f0;
+        }
+        .add-item-btn {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .add-item-btn:hover {
+            background-color: #0b7dda;
+        }
+        .table-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .remove-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .remove-btn:hover {
+            background-color: #da190b;
+        }
+        .total-section {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+        .place-order-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .place-order-btn:hover {
+            background-color: #45a049;
+        }
+        .place-order-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .currency {
+            text-align: right;
+        }
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-<h1>Order</h1>
-<div>
+<h1>Order Management</h1>
+
+<div class="nav-buttons">
     <button onclick="window.location.href='Customer.html'">Customers</button>
     <button onclick="window.location.href='Item.html'">Items</button>
     <button onclick="window.location.href='Order.html'">Orders</button>
     <button onclick="window.location.href='../Index.html'">Home</button>
 </div>
+
+<div class="order-form-container">
+    <div class="form-section">
+        <h3>Order Information</h3>
+        <div class="form-row">
+            <label for="order-id">Order ID:</label>
+            <input type="text" id="order-id" placeholder="Auto-generated" readonly>
+        </div>
+        <div class="form-row">
+            <label for="order-date">Order Date:</label>
+            <input type="text" id="order-date" readonly>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3>Customer Details</h3>
+        <div class="form-row">
+            <label for="customer-select">Customer:</label>
+            <select id="customer-select">
+                <option value="">Select Customer</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="customer-name">Name:</label>
+            <input type="text" id="customer-name" readonly>
+        </div>
+        <div class="form-row">
+            <label for="customer-address">Address:</label>
+            <input type="text" id="customer-address" readonly>
+        </div>
+    </div>
+
+    <div class="form-section">
+        <h3>Add Item</h3>
+        <div class="form-row">
+            <label for="item-select">Item:</label>
+            <select id="item-select">
+                <option value="">Select Item</option>
+            </select>
+        </div>
+        <div class="form-row">
+            <label for="item-description">Description:</label>
+            <input type="text" id="item-description" readonly>
+        </div>
+        <div class="form-row">
+            <label for="item-unit-price">Unit Price:</label>
+            <input type="text" id="item-unit-price" readonly>
+        </div>
+        <div class="form-row">
+            <label for="item-qty-available">Available Qty:</label>
+            <input type="text" id="item-qty-available" readonly>
+        </div>
+        <div class="form-row">
+            <label for="item-qty-order">Order Qty:</label>
+            <input type="number" id="item-qty-order" placeholder="Enter quantity" min="1">
+        </div>
+        <button class="add-item-btn" onclick="addItemToOrder()">Add to Order</button>
+    </div>
+</div>
+
+<div class="table-container">
+    <h3>Order Items</h3>
+    <table id="order-items-table">
+        <thead>
+        <tr>
+            <th>Item Code</th>
+            <th>Description</th>
+            <th>Unit Price (LKR)</th>
+            <th>Quantity</th>
+            <th>Total (LKR)</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="order-items-body">
+        <tr class="no-data">
+            <td colspan="6">No items added to order</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <div class="total-row">
+            <span>Order Total:</span>
+            <span id="order-total">LKR 0.00</span>
+        </div>
+    </div>
+
+    <button class="place-order-btn" onclick="placeOrder()" id="place-order-btn" disabled>Place Order</button>
+</div>
+
+<script>
+    let orderItems = [];
+    let customers = [];
+    let items = [];
+
+    $(document).ready(function() {
+        console.log('Order Management page loaded');
+        generateOrderId();
+        setCurrentDate();
+        loadCustomers();
+        loadItems();
+
+        // Customer selection change
+        $('#customer-select').change(function() {
+            const customerId = $(this).val();
+            if (customerId) {
+                const customer = customers.find(c => c.cid === customerId);
+                if (customer) {
+                    $('#customer-name').val(customer.cname);
+                    $('#customer-address').val(customer.caddress);
+                }
+            } else {
+                $('#customer-name').val('');
+                $('#customer-address').val('');
+            }
+            updatePlaceOrderButton();
+        });
+
+        // Item selection change
+        $('#item-select').change(function() {
+            const itemCode = $(this).val();
+            if (itemCode) {
+                const item = items.find(i => i.code === itemCode);
+                if (item) {
+                    $('#item-description').val(item.description);
+                    $('#item-unit-price').val(formatCurrency(item.unitPrice));
+                    $('#item-qty-available').val(item.qtyOnHand);
+                    $('#item-qty-order').val('');
+                    $('#item-qty-order').attr('max', item.qtyOnHand);
+                }
+            } else {
+                $('#item-description').val('');
+                $('#item-unit-price').val('');
+                $('#item-qty-available').val('');
+                $('#item-qty-order').val('');
+            }
+        });
+    });
+
+    function generateOrderId() {
+        const timestamp = Date.now();
+        const orderId = 'ORD' + timestamp;
+        $('#order-id').val(orderId);
+    }
+
+    function setCurrentDate() {
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+        $('#order-date').val(dateStr);
+    }
+
+    function loadCustomers() {
+        $.ajax({
+            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                customers = response;
+                $('#customer-select').empty();
+                $('#customer-select').append('<option value="">Select Customer</option>');
+
+                for (let customer of customers) {
+                    $('#customer-select').append(
+                        `<option value="${customer.cid}">${customer.cid} - ${customer.cname}</option>`
+                    );
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading customers:', error);
+                alert('Error loading customers');
+            }
+        });
+    }
+
+    function loadItems() {
+        $.ajax({
+            url: 'http://localhost:8080/POS_Backend_Web_exploded/item',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                items = response;
+                $('#item-select').empty();
+                $('#item-select').append('<option value="">Select Item</option>');
+
+                for (let item of items) {
+                    $('#item-select').append(
+                        `<option value="${item.code}">${item.code} - ${item.description}</option>`
+                    );
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading items:', error);
+                alert('Error loading items');
+            }
+        });
+    }
+
+    function addItemToOrder() {
+        const itemCode = $('#item-select').val();
+        const qty = parseInt($('#item-qty-order').val());
+
+        if (!itemCode) {
+            alert('Please select an item');
+            return;
+        }
+
+        if (!qty || qty <= 0) {
+            alert('Please enter a valid quantity');
+            return;
+        }
+
+        const item = items.find(i => i.code === itemCode);
+        if (!item) {
+            alert('Item not found');
+            return;
+        }
+
+        if (qty > item.qtyOnHand) {
+            alert('Quantity exceeds available stock');
+            return;
+        }
+
+        // Check if item already in order
+        const existingItem = orderItems.find(i => i.code === itemCode);
+        if (existingItem) {
+            alert('Item already added to order. Remove it first to change quantity.');
+            return;
+        }
+
+        const orderItem = {
+            code: item.code,
+            description: item.description,
+            unitPrice: item.unitPrice,
+            qty: qty,
+            total: item.unitPrice * qty
+        };
+
+        orderItems.push(orderItem);
+        renderOrderItems();
+        clearItemSelection();
+        updatePlaceOrderButton();
+    }
+
+    function renderOrderItems() {
+        $('#order-items-body').empty();
+
+        if (orderItems.length === 0) {
+            $('#order-items-body').html(
+                '<tr class="no-data"><td colspan="6">No items added to order</td></tr>'
+            );
+            $('#order-total').text('LKR 0.00');
+            return;
+        }
+
+        let total = 0;
+        for (let i = 0; i < orderItems.length; i++) {
+            const item = orderItems[i];
+            total += item.total;
+
+            const row = `
+                <tr>
+                    <td>${item.code}</td>
+                    <td>${item.description}</td>
+                    <td class="currency">${formatCurrency(item.unitPrice)}</td>
+                    <td>${item.qty}</td>
+                    <td class="currency">${formatCurrency(item.total)}</td>
+                    <td><button class="remove-btn" onclick="removeItem(${i})">Remove</button></td>
+                </tr>
+            `;
+            $('#order-items-body').append(row);
+        }
+
+        $('#order-total').text('LKR ' + formatCurrency(total));
+    }
+
+    function removeItem(index) {
+        orderItems.splice(index, 1);
+        renderOrderItems();
+        updatePlaceOrderButton();
+    }
+
+    function clearItemSelection() {
+        $('#item-select').val('');
+        $('#item-description').val('');
+        $('#item-unit-price').val('');
+        $('#item-qty-available').val('');
+        $('#item-qty-order').val('');
+    }
+
+    function updatePlaceOrderButton() {
+        const hasCustomer = $('#customer-select').val() !== '';
+        const hasItems = orderItems.length > 0;
+        $('#place-order-btn').prop('disabled', !(hasCustomer && hasItems));
+    }
+
+    function placeOrder() {
+        const customerId = $('#customer-select').val();
+        const orderId = $('#order-id').val();
+        const orderDate = $('#order-date').val();
+
+        if (!customerId) {
+            alert('Please select a customer');
+            return;
+        }
+
+        if (orderItems.length === 0) {
+            alert('Please add items to the order');
+            return;
+        }
+
+        const orderData = {
+            orderId: orderId,
+            orderDate: orderDate,
+            customerId: customerId,
+            orderDetails: orderItems.map(item => ({
+                itemCode: item.code,
+                qty: item.qty,
+                unitPrice: item.unitPrice
+            }))
+        };
+
+        console.log('Placing order:', orderData);
+
+        $.ajax({
+            url: 'http://localhost:8080/POS_Backend_Web_exploded/order',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(orderData),
+            success: function(response) {
+                console.log('Order placed:', response);
+                alert('Order placed successfully!');
+                resetOrderForm();
+            },
+            error: function(xhr, status, error) {
+                console.error('Order error:', xhr.responseText);
+                alert('Error placing order: ' + (xhr.responseText || error));
+            }
+        });
+    }
+
+    function resetOrderForm() {
+        orderItems = [];
+        generateOrderId();
+        setCurrentDate();
+        $('#customer-select').val('');
+        $('#customer-name').val('');
+        $('#customer-address').val('');
+        clearItemSelection();
+        renderOrderItems();
+        updatePlaceOrderButton();
+        loadItems(); // Reload items to get updated quantities
+    }
+
+    function formatCurrency(value) {
+        if (value === null || value === undefined) return '0.00';
+        return parseFloat(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+</script>
+
 </body>
 </html>

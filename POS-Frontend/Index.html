@@ -2,16 +2,135 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sri Lankan Spicy Foods POS System</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .menu-card-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+
+        .menu-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .menu-card button {
+            margin-top: 15px;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 25px;
+            background: #667eea;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.8;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Home</h1>
-<div>
-    <button onclick="window.location.href='pages/Customer.html'">Customers</button>
-    <button onclick="window.location.href='pages/Item.html'">Items</button>
-    <button onclick="window.location.href='pages/Order.html'">Orders</button>
+<div class="container">
+
+    <div class="header">
+        <h1>🌶️ Sri Lankan Spicy Foods</h1>
+        <p>Point of Sale System</p>
+    </div>
+
+    <div class="menu-grid">
+        <div class="menu-card" onclick="go('pages/Customer.html')">
+            <div class="menu-card-icon">👥</div>
+            <h2>Customers</h2>
+            <button>Manage</button>
+        </div>
+
+        <div class="menu-card" onclick="go('pages/Item.html')">
+            <div class="menu-card-icon">🍛</div>
+            <h2>Items</h2>
+            <button>Manage</button>
+        </div>
+
+        <div class="menu-card" onclick="go('pages/Order.html')">
+            <div class="menu-card-icon">🛒</div>
+            <h2>Orders</h2>
+            <button>Place Order</button>
+        </div>
+
+        <div class="menu-card" onclick="go('pages/OrderHistory.html')">
+            <div class="menu-card-icon">📊</div>
+            <h2>Order History</h2>
+            <button>View</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Sri Lankan Spicy Foods POS</p>
+    </div>
 
 </div>
+
+<script>
+    function go(page) {
+        window.location.href = page;
+    }
+</script>
 
 </body>
 </html>
