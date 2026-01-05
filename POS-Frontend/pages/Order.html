@@ -6,8 +6,6 @@
     <title>🛒 Place Order - SpicyPOS</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
     <link rel="stylesheet" href="../styles/Order.css">
 </head>
 <body>
@@ -125,7 +123,6 @@
     </div>
 </main>
 
-
 <script src="../js/jquery-3.7.1.min.js"></script>
 <script>
     let orderItems = [];
@@ -192,37 +189,47 @@
     }
 
     function loadCustomers() {
+        $('#customer-select').html('<option value="">Loading customers...</option>');
+
         $.ajax({
-            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
+                console.log('Customers loaded:', response);
                 customers = response;
                 $('#customer-select').empty().append('<option value="">Select Customer</option>');
                 response.forEach(c => {
                     $('#customer-select').append(`<option value="${c.cid}">${c.cid} - ${c.cname}</option>`);
                 });
             },
-            error: function() {
-                showToast('error', 'Error', 'Failed to load customers');
+            error: function(xhr, status, error) {
+                console.error('Load customers error:', xhr.status, error, xhr.responseText);
+                $('#customer-select').html('<option value="">Error loading customers</option>');
+                showToast('error', 'Error', 'Failed to load customers: ' + (xhr.responseText || error));
             }
         });
     }
 
     function loadItems() {
+        $('#item-select').html('<option value="">Loading items...</option>');
+
         $.ajax({
-            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/item',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
+                console.log('Items loaded:', response);
                 items = response;
                 $('#item-select').empty().append('<option value="">Select Item</option>');
                 response.forEach(i => {
                     $('#item-select').append(`<option value="${i.code}">${i.code} - ${i.description}</option>`);
                 });
             },
-            error: function() {
-                showToast('error', 'Error', 'Failed to load items');
+            error: function(xhr, status, error) {
+                console.error('Load items error:', xhr.status, error, xhr.responseText);
+                $('#item-select').html('<option value="">Error loading items</option>');
+                showToast('error', 'Error', 'Failed to load items: ' + (xhr.responseText || error));
             }
         });
     }

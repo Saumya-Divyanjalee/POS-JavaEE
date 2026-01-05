@@ -142,7 +142,7 @@
 
   function loadCustomersForFilter() {
     $.ajax({
-      url: 'http://localhost:8080/POS_Backend_Web_exploded/customer',
+      url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer',
       method: 'GET',
       dataType: 'json',
       success: function(response) {
@@ -162,7 +162,7 @@
     $('#order-table-body').html('<tr class="no-data"><td colspan="6"><i class="fas fa-spinner fa-spin"></i><br>Loading orders...</td></tr>');
 
     $.ajax({
-      url: 'http://localhost:8080/POS_Backend_Web_exploded/order',
+      url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
       method: 'GET',
       dataType: 'json',
       success: function(orders) {
@@ -262,7 +262,7 @@
   function deleteOrder(orderId) {
     if (confirm('Are you sure you want to delete order ' + orderId + '?')) {
       $.ajax({
-        url: 'http://localhost:8080/POS_Backend_Web_exploded/order?orderId=' + orderId,
+        url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order?orderId=' + orderId,
         method: 'DELETE',
         success: function() {
           showToast('success', 'Deleted', 'Order deleted successfully');
