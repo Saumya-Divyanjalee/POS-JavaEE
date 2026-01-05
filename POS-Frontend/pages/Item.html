@@ -2,235 +2,138 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Item Management</title>
-    <script src="../js/jquery-3.7.1.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-        }
-        .nav-buttons {
-            margin-bottom: 20px;
-        }
-        .nav-buttons button {
-            padding: 10px 20px;
-            margin-right: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .nav-buttons button:hover {
-            background-color: #45a049;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .form-row {
-            margin-bottom: 15px;
-        }
-        .form-container label {
-            display: inline-block;
-            width: 120px;
-            font-weight: bold;
-            color: #555;
-        }
-        .form-container input {
-            padding: 10px;
-            width: 250px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .form-container input[type="number"] {
-            width: 250px;
-        }
-        .button-row {
-            margin-top: 20px;
-        }
-        .form-container button {
-            padding: 10px 20px;
-            margin: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-save {
-            background-color: #2196F3;
-            color: white;
-        }
-        .btn-update {
-            background-color: #FF9800;
-            color: white;
-        }
-        .btn-delete {
-            background-color: #f44336;
-            color: white;
-        }
-        .btn-reset {
-            background-color: #607D8B;
-            color: white;
-        }
-        .btn-save:hover {
-            background-color: #0b7dda;
-        }
-        .btn-update:hover {
-            background-color: #e68900;
-        }
-        .btn-delete:hover {
-            background-color: #da190b;
-        }
-        .btn-reset:hover {
-            background-color: #4a5f6d;
-        }
-        .table-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        tbody tr:hover {
-            background-color: #f5f5f5;
-            cursor: pointer;
-        }
-        tr.selected {
-            background-color: #e3f2fd !important;
-        }
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-style: italic;
-        }
-        .currency {
-            text-align: right;
-        }
-        .quantity {
-            text-align: center;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍲 Item Management - SpicyPOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <link rel="stylesheet" href="../styles/Item.css">
 </head>
 <body>
-<h1>Item Management</h1>
 
-<div class="nav-buttons">
-    <button onclick="window.location.href='Customer.html'">Customers</button>
-    <button onclick="window.location.href='Item.html'">Items</button>
-    <button onclick="window.location.href='Order.html'">Orders</button>
-    <button onclick="window.location.href='../Index.html'">Home</button>
-</div>
+<button class="toggle-sidebar" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
 
-<div class="form-container">
-    <div class="form-row">
-        <label for="item-code">Item Code:</label>
-        <input type="text" id="item-code" placeholder="Enter Item Code">
+<nav class="sidebar" id="sidebar">
+    <div class="logo">
+        <i class="fas fa-pepper-hot"></i>
+        <h2>SpicyPOS</h2>
     </div>
-    <div class="form-row">
-        <label for="item-description">Description:</label>
-        <input type="text" id="item-description" placeholder="Enter Item Description">
-    </div>
-    <div class="form-row">
-        <label for="item-unit-price">Unit Price:</label>
-        <input type="number" id="item-unit-price" placeholder="0.00" step="0.01" min="0">
-    </div>
-    <div class="form-row">
-        <label for="item-qty">Qty On Hand:</label>
-        <input type="number" id="item-qty" placeholder="0" min="0">
-    </div>
-    <div class="button-row">
-        <button class="btn-save" onclick="saveItem()">Save</button>
-        <button class="btn-update" onclick="updateItem()">Update</button>
-        <button class="btn-delete" onclick="deleteItem()">Delete</button>
-        <button class="btn-reset" onclick="resetForm()">Reset</button>
-    </div>
-</div>
+    <ul class="nav-menu">
+        <li class="nav-item"><a href="../Index.html" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="Customer.html" class="nav-link"><i class="fas fa-users"></i><span>Customers</span></a></li>
+        <li class="nav-item"><a href="Item.html" class="nav-link active"><i class="fas fa-utensils"></i><span>Manage Items</span></a></li>
+        <li class="nav-item"><a href="Order.html" class="nav-link"><i class="fas fa-shopping-cart"></i><span>Place Order</span></a></li>
+        <li class="nav-item"><a href="OrderHistory.html" class="nav-link"><i class="fas fa-history"></i><span>Order History</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
+    </ul>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+</nav>
 
-<div class="table-container">
-    <h3>Item List</h3>
-    <table id="item-table">
-        <thead>
-        <tr>
-            <th>Item Code</th>
-            <th>Description</th>
-            <th>Unit Price (LKR)</th>
-            <th>Qty On Hand</th>
-        </tr>
-        </thead>
-        <tbody id="item-table-body">
-        <tr class="no-data">
-            <td colspan="4">Loading items...</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+<main class="main-content animate-slide">
+    <div class="header animate-fade">
+        <div class="header-left">
+            <h1><i class="fas fa-utensils"></i> Item Management</h1>
+            <p>Manage your inventory items efficiently</p>
+        </div>
+    </div>
 
+    <div class="form-card">
+        <div class="form-title"><i class="fas fa-box-open"></i> Item Information</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="item-code"><i class="fas fa-barcode"></i> Item Code</label>
+                <input type="text" id="item-code" placeholder="Enter item code">
+            </div>
+            <div class="form-group">
+                <label for="item-description"><i class="fas fa-align-left"></i> Description</label>
+                <input type="text" id="item-description" placeholder="Enter item description">
+            </div>
+            <div class="form-group">
+                <label for="item-unit-price"><i class="fas fa-dollar-sign"></i> Unit Price (LKR)</label>
+                <input type="number" step="0.01" min="0" id="item-unit-price" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label for="item-qty"><i class="fas fa-cubes"></i> Qty On Hand</label>
+                <input type="number" min="0" id="item-qty" placeholder="0">
+            </div>
+        </div>
+        <div class="button-group">
+            <button class="btn btn-save" onclick="saveItem()"><i class="fas fa-save"></i><span>Save Item</span></button>
+            <button class="btn btn-update" onclick="updateItem()"><i class="fas fa-edit"></i><span>Update Item</span></button>
+            <button class="btn btn-delete" onclick="deleteItem()"><i class="fas fa-trash-alt"></i><span>Delete Item</span></button>
+            <button class="btn btn-reset" onclick="resetForm()"><i class="fas fa-redo"></i><span>Reset Form</span></button>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="table-header">
+            <div class="table-title"><i class="fas fa-table"></i> Item List</div>
+            <div class="table-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="tableSearch" placeholder="Search items..." oninput="searchTable()">
+            </div>
+        </div>
+        <div class="table-container">
+            <table id="item-table">
+                <thead>
+                <tr>
+                    <th><i class="fas fa-barcode"></i> Item Code</th>
+                    <th><i class="fas fa-align-left"></i> Description</th>
+                    <th><i class="fas fa-dollar-sign"></i> Unit Price (LKR)</th>
+                    <th><i class="fas fa-cubes"></i> Qty On Hand</th>
+                </tr>
+                </thead>
+                <tbody id="item-table-body">
+                <tr class="no-data"><td colspan="4"><div class="loading"></div><br>Loading items...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="../js/jquery-3.7.1.min.js"></script>
 <script>
     $(document).ready(function() {
-        console.log('Item Management page loaded');
         getAllItems();
 
-        // Row click event for selection
         $(document).on('click', '#item-table-body tr:not(.no-data)', function() {
-            // Remove previous selection
             $('#item-table-body tr').removeClass('selected');
-            // Add selection to clicked row
             $(this).addClass('selected');
 
-            // Fill form with selected row data
             const code = $(this).find('td:eq(0)').text();
             const description = $(this).find('td:eq(1)').text();
             const unitPrice = $(this).find('td:eq(2)').text().replace(/,/g, '');
-            const qtyOnHand = $(this).find('td:eq(3)').text();
+            const qty = $(this).find('td:eq(3)').text();
 
             $('#item-code').val(code);
             $('#item-description').val(description);
             $('#item-unit-price').val(unitPrice);
-            $('#item-qty').val(qtyOnHand);
+            $('#item-qty').val(qty);
         });
     });
 
+    function showToast(type, title, message) {
+        const toast = $(`
+            <div class="toast ${type}">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            </div>
+        `);
+        $('body').append(toast);
+        setTimeout(() => toast.fadeOut(400, () => toast.remove()), 3000);
+    }
+
     function saveItem() {
-        // Validation
-        if (!$('#item-code').val()) {
-            alert('Please enter Item Code');
-            return;
-        }
-        if (!$('#item-description').val()) {
-            alert('Please enter Item Description');
-            return;
-        }
-        if (!$('#item-unit-price').val() || $('#item-unit-price').val() <= 0) {
-            alert('Please enter valid Unit Price');
-            return;
-        }
-        if (!$('#item-qty').val() || $('#item-qty').val() < 0) {
-            alert('Please enter valid Quantity');
-            return;
-        }
+        if (!$('#item-code').val()) return showToast('error', 'Validation Error', 'Please enter Item Code');
+        if (!$('#item-description').val()) return showToast('error', 'Validation Error', 'Please enter Description');
+        if (!$('#item-unit-price').val() || $('#item-unit-price').val() <= 0) return showToast('error', 'Validation Error', 'Please enter valid Unit Price');
+        if (!$('#item-qty').val() || $('#item-qty').val() < 0) return showToast('error', 'Validation Error', 'Please enter valid Quantity');
 
         const data = {
             code: $('#item-code').val(),
@@ -238,45 +141,25 @@
             unitPrice: parseFloat($('#item-unit-price').val()),
             qtyOnHand: parseInt($('#item-qty').val())
         };
-
-        console.log('Saving item:', data);
 
         $.ajax({
             url: "http://localhost:8080/POS_Backend_Web_exploded/item",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function(response) {
-                console.log('Save response:', response);
-                alert(response);
+            success: function() {
+                showToast('success', 'Success!', 'Item saved successfully');
                 resetForm();
                 getAllItems();
             },
-            error: function(xhr, status, error) {
-                console.error('Save error:', xhr.responseText);
-                alert('Error saving item: ' + (xhr.responseText || error));
+            error: function(xhr) {
+                showToast('error', 'Error', xhr.responseText || 'Failed to save item');
             }
         });
     }
 
     function updateItem() {
-        // Validation
-        if (!$('#item-code').val()) {
-            alert('Please select an item to update');
-            return;
-        }
-        if (!$('#item-description').val()) {
-            alert('Please enter Item Description');
-            return;
-        }
-        if (!$('#item-unit-price').val() || $('#item-unit-price').val() <= 0) {
-            alert('Please enter valid Unit Price');
-            return;
-        }
-        if (!$('#item-qty').val() || $('#item-qty').val() < 0) {
-            alert('Please enter valid Quantity');
-            return;
-        }
+        if (!$('#item-code').val()) return showToast('error', 'Validation Error', 'Please select an item to update');
 
         const data = {
             code: $('#item-code').val(),
@@ -285,103 +168,68 @@
             qtyOnHand: parseInt($('#item-qty').val())
         };
 
-        console.log('Updating item:', data);
-
         $.ajax({
             url: "http://localhost:8080/POS_Backend_Web_exploded/item",
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify(data),
-            success: function(response) {
-                console.log('Update response:', response);
-                alert(response);
+            success: function() {
+                showToast('success', 'Success!', 'Item updated successfully');
                 resetForm();
                 getAllItems();
             },
-            error: function(xhr, status, error) {
-                console.error('Update error:', xhr.responseText);
-                alert('Error updating item: ' + (xhr.responseText || error));
+            error: function(xhr) {
+                showToast('error', 'Error', xhr.responseText || 'Failed to update item');
             }
         });
     }
 
     function deleteItem() {
         const code = $('#item-code').val();
-
-        if (!code) {
-            alert('Please select an item to delete');
-            return;
-        }
-
-        if (!confirm('Are you sure you want to delete this item?')) {
-            return;
-        }
-
-        console.log('Deleting item:', code);
+        if (!code) return showToast('error', 'Validation Error', 'Please select an item to delete');
+        if (!confirm('Are you sure you want to delete this item?')) return;
 
         $.ajax({
             url: 'http://localhost:8080/POS_Backend_Web_exploded/item?code=' + code,
             method: "DELETE",
-            success: function(response) {
-                console.log('Delete response:', response);
-                alert(response);
+            success: function() {
+                showToast('success', 'Success!', 'Item deleted successfully');
                 resetForm();
                 getAllItems();
             },
-            error: function(xhr, status, error) {
-                console.error('Delete error:', xhr.responseText);
-                alert('Error deleting item: ' + (xhr.responseText || error));
+            error: function(xhr) {
+                showToast('error', 'Error', xhr.responseText || 'Failed to delete item');
             }
         });
     }
 
     function getAllItems() {
-        console.log('Fetching all items...');
-
         $.ajax({
             url: 'http://localhost:8080/POS_Backend_Web_exploded/item',
             method: "GET",
             dataType: "json",
             success: function(response) {
-                console.log('Items received:', response);
-
                 $('#item-table-body').empty();
-
                 if (!response || response.length === 0) {
-                    $('#item-table-body').html(
-                        '<tr class="no-data"><td colspan="4">No items found</td></tr>'
-                    );
+                    $('#item-table-body').html('<tr class="no-data"><td colspan="4"><i class="fas fa-inbox"></i><br>No items found</td></tr>');
                     return;
                 }
-
-                for (let item of response) {
-                    console.log('Processing item:', item);
-                    const row =
-                        "<tr>" +
-                        "<td>" + (item.code || '') + "</td>" +
-                        "<td>" + (item.description || '') + "</td>" +
-                        "<td class='currency'>" + formatCurrency(item.unitPrice) + "</td>" +
-                        "<td class='quantity'>" + (item.qtyOnHand || 0) + "</td>" +
-                        "</tr>";
-                    $("#item-table-body").append(row);
-                }
-
-                console.log('Table populated with', response.length, 'items');
+                response.forEach(item => {
+                    const formattedPrice = parseFloat(item.unitPrice || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    const row = `<tr>
+                        <td>${item.code || ''}</td>
+                        <td>${item.description || ''}</td>
+                        <td>${formattedPrice}</td>
+                        <td>${item.qtyOnHand || 0}</td>
+                    </tr>`;
+                    $('#item-table-body').append(row);
+                });
             },
-            error: function(xhr, status, error) {
-                console.error('Load error:', error);
-                console.error('Status:', status);
-                console.error('Response:', xhr.responseText);
-                $('#item-table-body').html(
-                    '<tr class="no-data"><td colspan="4">Error loading items: ' + error + '</td></tr>'
-                );
+            error: function() {
+                $('#item-table-body').html('<tr class="no-data"><td colspan="4"><i class="fas fa-exclamation-triangle"></i><br>Error loading items</td></tr>');
+                showToast('error', 'Error', 'Failed to load items');
             }
         });
-    }
-
-    function formatCurrency(value) {
-        if (value === null || value === undefined) return '0.00';
-        return parseFloat(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
     function resetForm() {
@@ -391,7 +239,24 @@
         $('#item-qty').val('');
         $('#item-table-body tr').removeClass('selected');
     }
-</script>
 
+    function searchTable() {
+        const term = $('#tableSearch').val().toLowerCase();
+        $('#item-table-body tr').each(function() {
+            const text = $(this).text().toLowerCase();
+            $(this).toggle(text.includes(term));
+        });
+    }
+
+    function toggleSidebar() {
+        $('#sidebar').toggleClass('collapsed');
+    }
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = 'login.html';
+        }
+    }
+</script>
 </body>
 </html>

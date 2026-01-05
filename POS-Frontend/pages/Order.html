@@ -2,276 +2,148 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Order Management</title>
-    <script src="../js/jquery-3.7.1.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        h1 {
-            color: #333;
-        }
-        .nav-buttons {
-            margin-bottom: 20px;
-        }
-        .nav-buttons button {
-            padding: 10px 20px;
-            margin-right: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .nav-buttons button:hover {
-            background-color: #45a049;
-        }
-        .order-form-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .form-section {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e0e0e0;
-        }
-        .form-section h3 {
-            color: #4CAF50;
-            margin-top: 0;
-        }
-        .form-row {
-            margin-bottom: 15px;
-        }
-        .form-row label {
-            display: inline-block;
-            width: 150px;
-            font-weight: bold;
-            color: #555;
-        }
-        .form-row input, .form-row select {
-            padding: 10px;
-            width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .form-row input[readonly] {
-            background-color: #f0f0f0;
-        }
-        .add-item-btn {
-            background-color: #2196F3;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .add-item-btn:hover {
-            background-color: #0b7dda;
-        }
-        .table-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        tbody tr:hover {
-            background-color: #f5f5f5;
-        }
-        .remove-btn {
-            background-color: #f44336;
-            color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .remove-btn:hover {
-            background-color: #da190b;
-        }
-        .total-section {
-            background-color: #e8f5e9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-            color: #2e7d32;
-        }
-        .place-order-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .place-order-btn:hover {
-            background-color: #45a049;
-        }
-        .place-order-btn:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        .currency {
-            text-align: right;
-        }
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            color: #999;
-            font-style: italic;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Place Order - SpicyPOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+
+    <link rel="stylesheet" href="../styles/Order.css">
 </head>
 <body>
-<h1>Order Management</h1>
 
-<div class="nav-buttons">
-    <button onclick="window.location.href='Customer.html'">Customers</button>
-    <button onclick="window.location.href='Item.html'">Items</button>
-    <button onclick="window.location.href='Order.html'">Orders</button>
-    <button onclick="window.location.href='../Index.html'">Home</button>
-</div>
+<button class="toggle-sidebar" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
 
-<div class="order-form-container">
-    <div class="form-section">
-        <h3>Order Information</h3>
-        <div class="form-row">
-            <label for="order-id">Order ID:</label>
-            <input type="text" id="order-id" placeholder="Auto-generated" readonly>
-        </div>
-        <div class="form-row">
-            <label for="order-date">Order Date:</label>
-            <input type="text" id="order-date" readonly>
+<nav class="sidebar" id="sidebar">
+    <div class="logo">
+        <i class="fas fa-pepper-hot"></i>
+        <h2>SpicyPOS</h2>
+    </div>
+    <ul class="nav-menu">
+        <li class="nav-item"><a href="../Index.html" class="nav-link"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+        <li class="nav-item"><a href="Customer.html" class="nav-link"><i class="fas fa-users"></i><span>Customers</span></a></li>
+        <li class="nav-item"><a href="Item.html" class="nav-link"><i class="fas fa-utensils"></i><span>Manage Items</span></a></li>
+        <li class="nav-item"><a href="Order.html" class="nav-link active"><i class="fas fa-shopping-cart"></i><span>Place Order</span></a></li>
+        <li class="nav-item"><a href="OrderHistory.html" class="nav-link"><i class="fas fa-history"></i><span>Order History</span></a></li>
+        <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-chart-line"></i><span>Analytics</span></a></li>
+    </ul>
+    <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+</nav>
+
+<main class="main-content animate-slide">
+    <div class="header animate-fade">
+        <div class="header-left">
+            <h1><i class="fas fa-shopping-cart"></i> Place Order</h1>
+            <p>Create a new customer order</p>
         </div>
     </div>
 
-    <div class="form-section">
-        <h3>Customer Details</h3>
-        <div class="form-row">
-            <label for="customer-select">Customer:</label>
-            <select id="customer-select">
-                <option value="">Select Customer</option>
-            </select>
+    <div class="form-card">
+        <div class="form-title"><i class="fas fa-receipt"></i> Order & Customer Details</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="order-id">Order ID</label>
+                <input type="text" id="order-id" readonly placeholder="Auto-generated">
+            </div>
+            <div class="form-group">
+                <label for="order-date">Order Date</label>
+                <input type="text" id="order-date" readonly>
+            </div>
+            <div class="form-group">
+                <label for="customer-select">Select Customer</label>
+                <select id="customer-select"></select>
+            </div>
+            <div class="form-group">
+                <label for="customer-name">Customer Name</label>
+                <input type="text" id="customer-name" readonly>
+            </div>
+            <div class="form-group">
+                <label for="customer-address">Address</label>
+                <input type="text" id="customer-address" readonly>
+            </div>
         </div>
-        <div class="form-row">
-            <label for="customer-name">Name:</label>
-            <input type="text" id="customer-name" readonly>
-        </div>
-        <div class="form-row">
-            <label for="customer-address">Address:</label>
-            <input type="text" id="customer-address" readonly>
+
+        <div class="form-title"><i class="fas fa-plus-circle"></i> Add Item to Order</div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="item-select">Select Item</label>
+                <select id="item-select"></select>
+            </div>
+            <div class="form-group">
+                <label for="item-description">Description</label>
+                <input type="text" id="item-description" readonly>
+            </div>
+            <div class="form-group">
+                <label for="item-unit-price">Unit Price (LKR)</label>
+                <input type="text" id="item-unit-price" readonly>
+            </div>
+            <div class="form-group">
+                <label for="item-qty-available">Available Qty</label>
+                <input type="text" id="item-qty-available" readonly>
+            </div>
+            <div class="form-group">
+                <label for="item-qty-order">Order Quantity</label>
+                <input type="number" id="item-qty-order" min="1" placeholder="Enter qty">
+            </div>
+            <div class="form-group" style="align-self: end;">
+                <button class="btn btn-add" onclick="addItemToOrder()">
+                    <i class="fas fa-plus"></i> <span>Add to Order</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="form-section">
-        <h3>Add Item</h3>
-        <div class="form-row">
-            <label for="item-select">Item:</label>
-            <select id="item-select">
-                <option value="">Select Item</option>
-            </select>
+    <div class="table-card">
+        <div class="form-title"><i class="fas fa-list-alt"></i> Order Items</div>
+        <div class="table-container">
+            <table id="order-items-table">
+                <thead>
+                <tr>
+                    <th>Item Code</th>
+                    <th>Description</th>
+                    <th>Unit Price (LKR)</th>
+                    <th>Quantity</th>
+                    <th>Total (LKR)</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="order-items-body">
+                <tr class="no-data"><td colspan="6"><i class="fas fa-inbox"></i><br>No items added to order</td></tr>
+                </tbody>
+            </table>
         </div>
-        <div class="form-row">
-            <label for="item-description">Description:</label>
-            <input type="text" id="item-description" readonly>
+
+        <div class="total-section">
+            Order Total: <span id="order-total">LKR 0.00</span>
         </div>
-        <div class="form-row">
-            <label for="item-unit-price">Unit Price:</label>
-            <input type="text" id="item-unit-price" readonly>
-        </div>
-        <div class="form-row">
-            <label for="item-qty-available">Available Qty:</label>
-            <input type="text" id="item-qty-available" readonly>
-        </div>
-        <div class="form-row">
-            <label for="item-qty-order">Order Qty:</label>
-            <input type="number" id="item-qty-order" placeholder="Enter quantity" min="1">
-        </div>
-        <button class="add-item-btn" onclick="addItemToOrder()">Add to Order</button>
+
+        <button class="btn btn-place" onclick="placeOrder()" id="place-order-btn" disabled>
+            <i class="fas fa-check-circle"></i> Place Order
+        </button>
     </div>
-</div>
+</main>
 
-<div class="table-container">
-    <h3>Order Items</h3>
-    <table id="order-items-table">
-        <thead>
-        <tr>
-            <th>Item Code</th>
-            <th>Description</th>
-            <th>Unit Price (LKR)</th>
-            <th>Quantity</th>
-            <th>Total (LKR)</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody id="order-items-body">
-        <tr class="no-data">
-            <td colspan="6">No items added to order</td>
-        </tr>
-        </tbody>
-    </table>
 
-    <div class="total-section">
-        <div class="total-row">
-            <span>Order Total:</span>
-            <span id="order-total">LKR 0.00</span>
-        </div>
-    </div>
-
-    <button class="place-order-btn" onclick="placeOrder()" id="place-order-btn" disabled>Place Order</button>
-</div>
-
+<script src="../js/jquery-3.7.1.min.js"></script>
 <script>
     let orderItems = [];
     let customers = [];
     let items = [];
 
     $(document).ready(function() {
-        console.log('Order Management page loaded');
         generateOrderId();
         setCurrentDate();
         loadCustomers();
         loadItems();
 
-        // Customer selection change
         $('#customer-select').change(function() {
-            const customerId = $(this).val();
-            if (customerId) {
-                const customer = customers.find(c => c.cid === customerId);
-                if (customer) {
-                    $('#customer-name').val(customer.cname);
-                    $('#customer-address').val(customer.caddress);
-                }
+            const cid = $(this).val();
+            if (cid) {
+                const customer = customers.find(c => c.cid === cid);
+                $('#customer-name').val(customer?.cname || '');
+                $('#customer-address').val(customer?.caddress || '');
             } else {
                 $('#customer-name').val('');
                 $('#customer-address').val('');
@@ -279,37 +151,44 @@
             updatePlaceOrderButton();
         });
 
-        // Item selection change
         $('#item-select').change(function() {
-            const itemCode = $(this).val();
-            if (itemCode) {
-                const item = items.find(i => i.code === itemCode);
+            const code = $(this).val();
+            if (code) {
+                const item = items.find(i => i.code === code);
                 if (item) {
                     $('#item-description').val(item.description);
                     $('#item-unit-price').val(formatCurrency(item.unitPrice));
                     $('#item-qty-available').val(item.qtyOnHand);
-                    $('#item-qty-order').val('');
                     $('#item-qty-order').attr('max', item.qtyOnHand);
                 }
             } else {
-                $('#item-description').val('');
-                $('#item-unit-price').val('');
-                $('#item-qty-available').val('');
-                $('#item-qty-order').val('');
+                clearItemFields();
             }
         });
     });
 
+    function showToast(type, title, message) {
+        const toast = $(`
+            <div class="toast ${type}">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <div class="toast-content">
+                    <h4>${title}</h4>
+                    <p>${message}</p>
+                </div>
+            </div>
+        `);
+        $('body').append(toast);
+        setTimeout(() => toast.fadeOut(400, () => toast.remove()), 3000);
+    }
+
     function generateOrderId() {
         const timestamp = Date.now();
-        const orderId = 'ORD' + timestamp;
-        $('#order-id').val(orderId);
+        $('#order-id').val('ORD-' + timestamp);
     }
 
     function setCurrentDate() {
-        const today = new Date();
-        const dateStr = today.toISOString().split('T')[0];
-        $('#order-date').val(dateStr);
+        const today = new Date().toISOString().split('T')[0];
+        $('#order-date').val(today);
     }
 
     function loadCustomers() {
@@ -319,18 +198,13 @@
             dataType: 'json',
             success: function(response) {
                 customers = response;
-                $('#customer-select').empty();
-                $('#customer-select').append('<option value="">Select Customer</option>');
-
-                for (let customer of customers) {
-                    $('#customer-select').append(
-                        `<option value="${customer.cid}">${customer.cid} - ${customer.cname}</option>`
-                    );
-                }
+                $('#customer-select').empty().append('<option value="">Select Customer</option>');
+                response.forEach(c => {
+                    $('#customer-select').append(`<option value="${c.cid}">${c.cid} - ${c.cname}</option>`);
+                });
             },
-            error: function(xhr, status, error) {
-                console.error('Error loading customers:', error);
-                alert('Error loading customers');
+            error: function() {
+                showToast('error', 'Error', 'Failed to load customers');
             }
         });
     }
@@ -342,84 +216,53 @@
             dataType: 'json',
             success: function(response) {
                 items = response;
-                $('#item-select').empty();
-                $('#item-select').append('<option value="">Select Item</option>');
-
-                for (let item of items) {
-                    $('#item-select').append(
-                        `<option value="${item.code}">${item.code} - ${item.description}</option>`
-                    );
-                }
+                $('#item-select').empty().append('<option value="">Select Item</option>');
+                response.forEach(i => {
+                    $('#item-select').append(`<option value="${i.code}">${i.code} - ${i.description}</option>`);
+                });
             },
-            error: function(xhr, status, error) {
-                console.error('Error loading items:', error);
-                alert('Error loading items');
+            error: function() {
+                showToast('error', 'Error', 'Failed to load items');
             }
         });
     }
 
     function addItemToOrder() {
-        const itemCode = $('#item-select').val();
+        const code = $('#item-select').val();
         const qty = parseInt($('#item-qty-order').val());
 
-        if (!itemCode) {
-            alert('Please select an item');
-            return;
-        }
+        if (!code) return showToast('error', 'Invalid', 'Please select an item');
+        if (!qty || qty <= 0) return showToast('error', 'Invalid', 'Please enter valid quantity');
 
-        if (!qty || qty <= 0) {
-            alert('Please enter a valid quantity');
-            return;
-        }
+        const item = items.find(i => i.code === code);
+        if (qty > item.qtyOnHand) return showToast('error', 'Stock Error', 'Quantity exceeds available stock');
 
-        const item = items.find(i => i.code === itemCode);
-        if (!item) {
-            alert('Item not found');
-            return;
-        }
+        if (orderItems.find(i => i.code === code)) return showToast('error', 'Duplicate', 'Item already in order');
 
-        if (qty > item.qtyOnHand) {
-            alert('Quantity exceeds available stock');
-            return;
-        }
-
-        // Check if item already in order
-        const existingItem = orderItems.find(i => i.code === itemCode);
-        if (existingItem) {
-            alert('Item already added to order. Remove it first to change quantity.');
-            return;
-        }
-
-        const orderItem = {
+        orderItems.push({
             code: item.code,
             description: item.description,
             unitPrice: item.unitPrice,
             qty: qty,
             total: item.unitPrice * qty
-        };
+        });
 
-        orderItems.push(orderItem);
         renderOrderItems();
-        clearItemSelection();
+        clearItemFields();
         updatePlaceOrderButton();
     }
 
     function renderOrderItems() {
         $('#order-items-body').empty();
-
         if (orderItems.length === 0) {
-            $('#order-items-body').html(
-                '<tr class="no-data"><td colspan="6">No items added to order</td></tr>'
-            );
+            $('#order-items-body').html('<tr class="no-data"><td colspan="6"><i class="fas fa-inbox"></i><br>No items added to order</td></tr>');
             $('#order-total').text('LKR 0.00');
             return;
         }
 
         let total = 0;
-        for (let i = 0; i < orderItems.length; i++) {
-            const item = orderItems[i];
+        orderItems.forEach((item, index) => {
             total += item.total;
-
             const row = `
                 <tr>
                     <td>${item.code}</td>
@@ -427,12 +270,10 @@
                     <td class="currency">${formatCurrency(item.unitPrice)}</td>
                     <td>${item.qty}</td>
                     <td class="currency">${formatCurrency(item.total)}</td>
-                    <td><button class="remove-btn" onclick="removeItem(${i})">Remove</button></td>
-                </tr>
-            `;
+                    <td><button class="btn btn-remove" onclick="removeItem(${index})"><i class="fas fa-trash"></i> Remove</button></td>
+                </tr>`;
             $('#order-items-body').append(row);
-        }
-
+        });
         $('#order-total').text('LKR ' + formatCurrency(total));
     }
 
@@ -442,12 +283,12 @@
         updatePlaceOrderButton();
     }
 
-    function clearItemSelection() {
+    function clearItemFields() {
         $('#item-select').val('');
         $('#item-description').val('');
         $('#item-unit-price').val('');
         $('#item-qty-available').val('');
-        $('#item-qty-order').val('');
+        $('#item-qty-order').val('').removeAttr('max');
     }
 
     function updatePlaceOrderButton() {
@@ -458,22 +299,11 @@
 
     function placeOrder() {
         const customerId = $('#customer-select').val();
-        const orderId = $('#order-id').val();
-        const orderDate = $('#order-date').val();
-
-        if (!customerId) {
-            alert('Please select a customer');
-            return;
-        }
-
-        if (orderItems.length === 0) {
-            alert('Please add items to the order');
-            return;
-        }
+        if (!customerId || orderItems.length === 0) return;
 
         const orderData = {
-            orderId: orderId,
-            orderDate: orderDate,
+            orderId: $('#order-id').val(),
+            orderDate: $('#order-date').val(),
             customerId: customerId,
             orderDetails: orderItems.map(item => ({
                 itemCode: item.code,
@@ -482,21 +312,17 @@
             }))
         };
 
-        console.log('Placing order:', orderData);
-
         $.ajax({
             url: 'http://localhost:8080/POS_Backend_Web_exploded/order',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),
-            success: function(response) {
-                console.log('Order placed:', response);
-                alert('Order placed successfully!');
+            success: function() {
+                showToast('success', 'Success!', 'Order placed successfully!');
                 resetOrderForm();
             },
-            error: function(xhr, status, error) {
-                console.error('Order error:', xhr.responseText);
-                alert('Error placing order: ' + (xhr.responseText || error));
+            error: function(xhr) {
+                showToast('error', 'Error', xhr.responseText || 'Failed to place order');
             }
         });
     }
@@ -504,21 +330,28 @@
     function resetOrderForm() {
         orderItems = [];
         generateOrderId();
-        setCurrentDate();
         $('#customer-select').val('');
         $('#customer-name').val('');
         $('#customer-address').val('');
-        clearItemSelection();
+        clearItemFields();
         renderOrderItems();
         updatePlaceOrderButton();
-        loadItems(); // Reload items to get updated quantities
+        loadItems(); // Refresh stock
     }
 
     function formatCurrency(value) {
-        if (value === null || value === undefined) return '0.00';
-        return parseFloat(value).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parseFloat(value || 0).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    function toggleSidebar() {
+        $('#sidebar').toggleClass('collapsed');
+    }
+
+    function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            window.location.href = 'login.html';
+        }
     }
 </script>
-
 </body>
 </html>
