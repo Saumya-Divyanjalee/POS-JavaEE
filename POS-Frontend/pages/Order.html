@@ -193,7 +193,7 @@
 
     function loadCustomers() {
         $.ajax({
-            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -211,7 +211,7 @@
 
     function loadItems() {
         $.ajax({
-            url: 'http://localhost:8080/POS_Backend_Web_exploded/item',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
             method: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -313,7 +313,7 @@
         };
 
         $.ajax({
-            url: 'http://localhost:8080/POS_Backend_Web_exploded/order',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/order',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(orderData),

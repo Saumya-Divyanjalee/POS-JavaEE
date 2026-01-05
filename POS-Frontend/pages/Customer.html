@@ -211,7 +211,7 @@
             cemail: $('#customer-email').val()
         };
         $.ajax({
-            url: "http://localhost:8080/POS_Backend_Web_exploded/customer",
+            url: "http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -238,7 +238,7 @@
             cemail: $('#customer-email').val()
         };
         $.ajax({
-            url: "http://localhost:8080/POS_Backend_Web_exploded/customer",
+            url: "http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer",
             method: "PUT",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -262,7 +262,7 @@
             return;
         }
         $.ajax({
-            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer?cid=' + cid,
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer?cid=' + cid,
             method: "DELETE",
             success: function(response) {
                 showToast('success', 'Success!', 'Customer deleted successfully');
@@ -276,7 +276,7 @@
     }
     function getAllCustomer() {
         $.ajax({
-            url: 'http://localhost:8080/POS_Backend_Web_exploded/customer',
+            url: 'http://localhost:8080/JavaEE_POS_my_Web5_exploded/customer',
             method: "GET",
             dataType: "json",
             success: function(response) {
