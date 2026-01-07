@@ -32,7 +32,7 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
+        resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         try {
@@ -56,21 +56,37 @@ public class CustomerServlet extends HttpServlet {
 
                 int rowInserted = preparedStatement.executeUpdate();
                 if (rowInserted > 0) {
-                    resp.getWriter().write("Customer Saved Successfully");
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "success");
+                    response.addProperty("message", "Customer Saved Successfully");
+                    resp.getWriter().write(gson.toJson(response));
                 } else {
-                    resp.getWriter().write("Customer Save Failed");
+                    resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "error");
+                    response.addProperty("message", "Customer Save Failed");
+                    resp.getWriter().write(gson.toJson(response));
                 }
             }
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("Error: " + e.getMessage());
+            JsonObject error = new JsonObject();
+            error.addProperty("status", "error");
+            error.addProperty("message", "Database Error: " + e.getMessage());
+            resp.getWriter().write(error.toString());
             e.printStackTrace();
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            JsonObject error = new JsonObject();
+            error.addProperty("status", "error");
+            error.addProperty("message", "Invalid request: " + e.getMessage());
+            resp.getWriter().write(error.toString());
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
+        resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         try {
@@ -94,15 +110,31 @@ public class CustomerServlet extends HttpServlet {
 
                 int rowUpdated = preparedStatement.executeUpdate();
                 if (rowUpdated > 0) {
-                    resp.getWriter().write("Customer Updated Successfully");
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "success");
+                    response.addProperty("message", "Customer Updated Successfully");
+                    resp.getWriter().write(gson.toJson(response));
                 } else {
-                    resp.getWriter().write("Customer Update Failed");
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "error");
+                    response.addProperty("message", "Customer not found or Update Failed");
+                    resp.getWriter().write(gson.toJson(response));
                 }
             }
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("Error: " + e.getMessage());
+            JsonObject error = new JsonObject();
+            error.addProperty("status", "error");
+            error.addProperty("message", "Database Error: " + e.getMessage());
+            resp.getWriter().write(error.toString());
             e.printStackTrace();
+        } catch (Exception e) {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            JsonObject error = new JsonObject();
+            error.addProperty("status", "error");
+            error.addProperty("message", "Invalid request: " + e.getMessage());
+            resp.getWriter().write(error.toString());
         }
     }
 
@@ -133,14 +165,14 @@ public class CustomerServlet extends HttpServlet {
                 customerList.add(jsonObject);
             }
 
-            // Use Gson to properly format JSON
             Gson gson = new Gson();
             resp.getWriter().write(gson.toJson(customerList));
 
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             JsonObject error = new JsonObject();
-            error.addProperty("error", e.getMessage());
+            error.addProperty("status", "error");
+            error.addProperty("message", "Database Error: " + e.getMessage());
             resp.getWriter().write(error.toString());
             e.printStackTrace();
         }
@@ -148,25 +180,71 @@ public class CustomerServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.setContentType("text/plain");
+        resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
-        String id = req.getParameter("cid");
+        try {
+            String id = req.getParameter("cid");
 
-        try (Connection connection = ds.getConnection()) {
-            String query = "DELETE FROM customer WHERE id=?";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, id);
+            if (id == null || id.trim().isEmpty()) {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                JsonObject error = new JsonObject();
+                error.addProperty("status", "error");
+                error.addProperty("message", "Customer ID is required");
+                resp.getWriter().write(error.toString());
+                return;
+            }
 
-            int rowDeleted = preparedStatement.executeUpdate();
-            if (rowDeleted > 0) {
-                resp.getWriter().write("Customer Deleted Successfully");
-            } else {
-                resp.getWriter().write("Customer Delete Failed");
+            try (Connection connection = ds.getConnection()) {
+                // First check if customer exists
+                String checkQuery = "SELECT id FROM customer WHERE id=?";
+                PreparedStatement checkStmt = connection.prepareStatement(checkQuery);
+                checkStmt.setString(1, id);
+                ResultSet rs = checkStmt.executeQuery();
+
+                if (!rs.next()) {
+                    resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    JsonObject error = new JsonObject();
+                    error.addProperty("status", "error");
+                    error.addProperty("message", "Customer not found with ID: " + id);
+                    resp.getWriter().write(error.toString());
+                    return;
+                }
+
+                // Delete the customer
+                String query = "DELETE FROM customer WHERE id=?";
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setString(1, id);
+
+                int rowDeleted = preparedStatement.executeUpdate();
+
+                Gson gson = new Gson();
+                if (rowDeleted > 0) {
+                    JsonObject response = new JsonObject();
+                    response.addProperty("status", "success");
+                    response.addProperty("message", "Customer Deleted Successfully");
+                    resp.getWriter().write(gson.toJson(response));
+                } else {
+                    resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    JsonObject error = new JsonObject();
+                    error.addProperty("status", "error");
+                    error.addProperty("message", "Customer Delete Failed");
+                    resp.getWriter().write(gson.toJson(error));
+                }
             }
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            resp.getWriter().write("Error: " + e.getMessage());
+            JsonObject error = new JsonObject();
+            error.addProperty("status", "error");
+
+            // Check for foreign key constraint violation
+            if (e.getMessage().contains("foreign key constraint")) {
+                error.addProperty("message", "Cannot delete customer - customer has related orders");
+            } else {
+                error.addProperty("message", "Database Error: " + e.getMessage());
+            }
+
+            resp.getWriter().write(error.toString());
             e.printStackTrace();
         }
     }
